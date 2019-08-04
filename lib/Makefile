@@ -52,9 +52,7 @@ obj-y += bcd.o div64.o sort.o parser.o random32.o \
 	 bsearch.o find_bit.o llist.o memweight.o kfifo.o \
 	 percpu-refcount.o percpu_ida.o rhashtable.o reciprocal_div.o \
 	 once.o refcount.o usercopy.o errseq.o
-
 obj-$(CONFIG_DEBUG_KERNEL) += debug_locks.o
-
 obj-y += string_helpers.o
 obj-$(CONFIG_TEST_STRING_HELPERS) += test-string_helpers.o
 obj-y += hexdump.o
