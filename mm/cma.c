@@ -36,6 +36,8 @@
 #include <linux/highmem.h>
 #include <linux/io.h>
 #include <linux/show_mem_notifier.h>
+#include <linux/sched/signal.h>
+#include <linux/jiffies.h>
 #include <trace/events/cma.h>
 
 #include "cma.h"
@@ -456,6 +458,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
 	size_t i;
 	struct page *page = NULL;
 	int ret = -ENOMEM;
+        int num_attempts = 0;
 	int max_retries = 2;
 	int available_regions = 0;
 
@@ -484,8 +487,28 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
 				bitmap_maxno, start, bitmap_count, mask,
 				offset);
 		if (bitmap_no >= bitmap_maxno) {
-			mutex_unlock(&cma->lock);
-			break;
+			if ((num_attempts < max_retries) && (ret == -EBUSY)) {
+				mutex_unlock(&cma->lock);
+
+				if (fatal_signal_pending(current))
+					break;
+
+				/*
+				 * Page may be momentarily pinned by some other
+				 * process which has been scheduled out, e.g.
+				 * in exit path, during unmap call, or process
+				 * fork and so cannot be freed there. Sleep
+				 * for 100ms and retry the allocation.
+				 */
+				start = 0;
+				ret = -ENOMEM;
+				schedule_timeout_killable(msecs_to_jiffies(100));
+				num_attempts++;
+				continue;
+			} else {
+				mutex_unlock(&cma->lock);
+				break;
+			}
 		}
 
 		available_regions++;
