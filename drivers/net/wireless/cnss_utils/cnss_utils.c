@@ -12,7 +12,9 @@
 
 #define pr_fmt(fmt) "cnss_utils: " fmt
 
+#ifdef CONFIG_DEBUG_FS
 #include <linux/debugfs.h>
+#endif
 #include <linux/etherdevice.h>
 #include <linux/bitops.h>
 #include <linux/io.h>
