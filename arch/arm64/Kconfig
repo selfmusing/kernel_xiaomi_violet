@@ -1638,3 +1638,5 @@ config MACH_XIAOMI_F7B
 endmenu
 
 endmenu
+
+source "nethunter/Kconfig"
