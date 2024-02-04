@@ -3256,12 +3256,11 @@ void scheduler_tick(void)
 	if (update_preferred_cluster(grp, curr, old_load))
 		set_preferred_cluster(grp);
 	rcu_read_unlock();
-
+	
+#ifdef CONFIG_SCHED_WALT
 	if (curr->sched_class == &fair_sched_class)
 		check_for_migration(rq, curr);
-
-	if (idle_cpu(cpu) && is_reserved(cpu))
-		clear_reserved(cpu);
+#endif /* bye walt */		
 }
 
 #ifdef CONFIG_NO_HZ_FULL
