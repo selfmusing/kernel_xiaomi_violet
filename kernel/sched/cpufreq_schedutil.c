@@ -19,7 +19,7 @@
 #include <linux/sched/sysctl.h>
 #include "sched.h"
 
-#define SUGOV_KTHREAD_PRIORITY	50
+#define SUGOV_KTHREAD_PRIORITY	25
 
 struct sugov_tunables {
 	struct gov_attr_set attr_set;
