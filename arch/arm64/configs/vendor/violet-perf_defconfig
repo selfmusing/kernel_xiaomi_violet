@@ -6162,3 +6162,12 @@ CONFIG_MACH_XIAOMI_SM6150=y
 # Xiaomi board selection
 #
 CONFIG_MACH_XIAOMI_F7B=y
+#########################################################
+CONFIG_ZRAM_ENTROPY=y
+CONFIG_ZRAM_ENTROPY_THRESHOLD=100000
+#########################################################
+CONFIG_HZ=50
+CONFIG_SCHED_CASS=y
+CONFIG_SCHED_BORE=y
+CONFIG_PELT_UTIL_HALFLIFE_4=y
+
