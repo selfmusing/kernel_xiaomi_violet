@@ -888,7 +888,7 @@ out:
 static struct configfs_item_operations uvcg_control_class_item_ops = {
 	.release	= uvcg_config_item_release,
 	.allow_link	= uvcg_control_class_allow_link,
-	.drop_link	= uvcg_control_class_drop_link,
+	.drop_link	= (void*)uvcg_control_class_drop_link,
 };
 
 static struct config_item_type uvcg_control_class_type = {
@@ -1305,7 +1305,7 @@ static int uvcg_streaming_header_drop_link(struct config_item *src,
 static struct configfs_item_operations uvcg_streaming_header_item_ops = {
 	.release	= uvcg_config_item_release,
 	.allow_link	= uvcg_streaming_header_allow_link,
-	.drop_link	= uvcg_streaming_header_drop_link,
+	.drop_link	= (void*)uvcg_streaming_header_drop_link,
 };
 
 #define UVCG_STREAMING_HEADER_ATTR(cname, aname, bits)			\
@@ -2670,7 +2670,7 @@ out:
 static struct configfs_item_operations uvcg_streaming_class_item_ops = {
 	.release	= uvcg_config_item_release,
 	.allow_link	= uvcg_streaming_class_allow_link,
-	.drop_link	= uvcg_streaming_class_drop_link,
+	.drop_link	= (void*)uvcg_streaming_class_drop_link,
 };
 
 static struct config_item_type uvcg_streaming_class_type = {
