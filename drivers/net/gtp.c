@@ -867,7 +867,8 @@ static int gtp_encap_enable(struct gtp_dev *gtp, struct nlattr *data[])
 		if (fd1 >= 0) {
 			sk1u = gtp_encap_enable_socket(fd1, UDP_ENCAP_GTP1U, gtp);
 			if (IS_ERR(sk1u)) {
-				gtp_encap_disable_sock(sk0);
+				if (sk0)
+					gtp_encap_disable_sock(sk0);
 				return PTR_ERR(sk1u);
 			}
 		}
