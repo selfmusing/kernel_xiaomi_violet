@@ -2900,7 +2900,9 @@ static const struct file_operations proc_vmalloc_operations = {
 
 static int __init proc_vmalloc_init(void)
 {
-	proc_create("vmallocinfo", S_IRUSR, NULL, &proc_vmalloc_operations);
+	if (IS_ENABLED(CONFIG_PROC_STRIPPED))
+		return 0;
+	proc_create("vmallocinfo", 0400, NULL, &proc_vmalloc_operations);
 	return 0;
 }
 module_init(proc_vmalloc_init);
