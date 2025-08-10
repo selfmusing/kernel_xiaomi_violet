@@ -560,14 +560,12 @@ static int aio_setup_ring(struct kioctx *ctx, unsigned int nr_events)
 
 void kiocb_set_cancel_fn(struct kiocb *iocb, kiocb_cancel_fn *cancel)
 {
-	struct aio_kiocb *req;
-	struct kioctx *ctx;
+	struct aio_kiocb *req = container_of(iocb, struct aio_kiocb, rw);
+	struct kioctx *ctx = req->ki_ctx;
 	unsigned long flags;
 
 	if (WARN_ON_ONCE(!list_empty(&req->ki_list)))
 		return;
-
-	ctx = req->ki_ctx;
 
 	spin_lock_irqsave(&ctx->ctx_lock, flags);
 	list_add_tail(&req->ki_list, &ctx->active_reqs);
@@ -1711,7 +1709,6 @@ static long do_io_submit(aio_context_t ctx_id, long nr,
 	struct kioctx *ctx;
 	long ret = 0;
 	int i = 0;
-	struct blk_plug plug;
 
 	if (unlikely(nr < 0))
 		return -EINVAL;
@@ -1727,8 +1724,6 @@ static long do_io_submit(aio_context_t ctx_id, long nr,
 		pr_debug("EINVAL: invalid context id\n");
 		return -EINVAL;
 	}
-
-	blk_start_plug(&plug);
 
 	/*
 	 * AKPM: should this return a partial result if some of the IOs were
@@ -1752,7 +1747,6 @@ static long do_io_submit(aio_context_t ctx_id, long nr,
 		if (ret)
 			break;
 	}
-	blk_finish_plug(&plug);
 
 	percpu_ref_put(&ctx->users);
 	return i ? i : ret;
